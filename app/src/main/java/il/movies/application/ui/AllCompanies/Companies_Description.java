@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +79,7 @@ public class Companies_Description extends Fragment {
         if(getArguments()!=null){
             id = getArguments().getString(getString(R.string.id));
         }
+
         if(id!=""){
             SpecificCompanyModel specific = ServiceSpecificCompany.specificCompany(id);
             Glide.with(requireContext()).load(specific.getImage_background()).into((ImageView) view.findViewById(R.id.imageCompany));
