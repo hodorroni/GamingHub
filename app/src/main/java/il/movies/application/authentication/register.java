@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -73,6 +74,7 @@ public class register extends Fragment {
     final String[] password = {""};
     final String[] phone = {""};
     final String[] name = {""};
+    private boolean isPrivate = false;
 
     private ActivityResultLauncher<String> imageLauncher;
     Uri imageTaken=null;
@@ -117,6 +119,9 @@ public class register extends Fragment {
                     imagePerson = requireActivity().findViewById(R.id.image_person);
                         Glide.with(register.this).asBitmap().load(uri).transform(new CircleCrop()).into(imagePerson);
                         imageTaken = uri;
+                }
+                else {
+                    Toast.makeText(requireActivity(),"You haven't chose a photo",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -241,6 +246,21 @@ public class register extends Fragment {
             }
         });
 
+        RadioButton privacy = view.findViewById(R.id.profile_private);
+        privacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isPrivate){
+                    isPrivate = true;
+                    privacy.setChecked(true);
+                }
+                else {
+                    isPrivate = false;
+                    privacy.setChecked(false);
+                }
+            }
+        });
+
         return view;
     }
 
@@ -263,13 +283,15 @@ public class register extends Fragment {
 
                                 //storing to the realtime database
                                 DatabaseReference myRef = database.getReference("users");
-                                Data newObject = new Data(user.getUid().toString(), email[0], password[0], phone[0], name[0]);
+
 
                                 //uploading the photo to the storage database
                                 //if the user didn't chose any photo then take the default photo
-                                if(imageTaken==null){
+                                if(imageTaken==null ){
                                     imageTaken =Uri.parse("android.resource://il.movies.application/"+R.drawable.blank_user_photo);
                                 }
+
+                                Data newObject = new Data(user.getUid().toString(), email[0], password[0], phone[0], name[0],imageTaken.toString(),isPrivate);
                                 UploadTask uploadTask = storageRef.putFile(imageTaken);
                                 uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                     @Override

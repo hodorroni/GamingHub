@@ -39,6 +39,9 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popUpTo="@id/my_nav" />
+        <action
+            android:id="@+id/action_home_screen_fragment_to_search_profile"
+            app:destination="@id/search_profile" />
     </fragment>
     <fragment
         android:id="@+id/companies_games_fragment"
@@ -150,4 +153,9 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left" />
     </fragment>
+    <fragment
+        android:id="@+id/search_profile"
+        android:name="il.movies.application.ui.profiles.search_profile"
+        android:label="fragment_search_profile"
+        tools:layout="@layout/fragment_search_profile" />
 </navigation>

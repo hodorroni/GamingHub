@@ -150,6 +150,16 @@ public class home_screen_fragment extends Fragment {
             }
         });
 
+
+
+        view.findViewById(R.id.profiles_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.action_home_screen_fragment_to_search_profile);
+            }
+        });
+
+
         //Logging out from the app
         Button logoutBtn = (Button)view.findViewById(R.id.intro_logout);
         logoutBtn.setOnClickListener(new View.OnClickListener() {

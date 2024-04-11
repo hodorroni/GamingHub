@@ -33,7 +33,7 @@
             android:textSize="25sp"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:text="Favourites Games"
+            android:text="Favourite Games"
             android:gravity="center"/>
     </LinearLayout>
 

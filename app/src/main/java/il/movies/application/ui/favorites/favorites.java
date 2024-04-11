@@ -126,7 +126,9 @@ public class favorites extends Fragment {
                     userFavorites = favorites;
                     if(userFavorites.isEmpty()){
                         Toast.makeText(requireContext(),"No favourites found!",Toast.LENGTH_SHORT).show();
-
+                    }
+                    else if(userFavorites.get(0).equals("") ||userFavorites.get(0).isEmpty() ){
+                        Toast.makeText(requireContext(),"No favourites found!",Toast.LENGTH_SHORT).show();
                     }
                     else {
                         adapter = new LikedGamesAdapter(userFavorites, new LikedGamesAdapter.favoriteClicked() {

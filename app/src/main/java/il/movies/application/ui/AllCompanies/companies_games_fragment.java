@@ -414,6 +414,44 @@ public class companies_games_fragment extends Fragment implements ServiceGamesFo
 
     public void addFavoriteGame(String userId, String gameName){
         DatabaseReference favoritesRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("favorites");
-        favoritesRef.push().setValue(gameName);
+
+        // Check if favorites list exists
+        favoritesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Get the existing favorites list
+                    List<String> favorites = new ArrayList<>();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String favorite = dataSnapshot.getValue(String.class);
+                        if (favorite != null && !favorite.isEmpty()) {
+                            favorites.add(favorite);
+                        }
+                    }
+
+                    // If favorites list is empty or its first element is "", set the list to contain only the new gameName
+                    if (favorites.isEmpty() || favorites.get(0).equals("")) {
+                        favorites.clear();
+                        favorites.add(gameName);
+                    } else {
+                        // Otherwise, add the new gameName to the existing list
+                        favorites.add(gameName);
+                    }
+
+                    // Update the favorites field in the database
+                    favoritesRef.setValue(favorites);
+                } else {
+                    // If favorites list doesn't exist, create a new list containing only the new gameName
+                    List<String> favorites = new ArrayList<>();
+                    favorites.add(gameName);
+                    favoritesRef.setValue(favorites);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
