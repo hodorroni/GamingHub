@@ -80,6 +80,7 @@ public class search_profile extends Fragment {
     private UserLikedGamesAdapter likedAdapter;
     private RecyclerView userLikedRecycler;
     private Boolean privacy = false;
+    AlertDialog dialog;
 
     public search_profile() {
         // Required empty public constructor
@@ -162,6 +163,7 @@ public class search_profile extends Fragment {
                     userProfiles(userTyped, new OnGetProfilesListener() {
                         @Override
                         public void getProfiles(List<Data> list2) {
+
                             list = list2;
                             if(list.isEmpty()){
                                 Toast.makeText(requireContext(),"No users found!",Toast.LENGTH_SHORT).show();
@@ -172,6 +174,7 @@ public class search_profile extends Fragment {
                             adapter = new ProfilesAdapter(list, requireContext(), new ProfilesAdapter.userClicked() {
                                 @Override
                                 public void user(Data data) {
+                                    privacy = data.isPrivate;
                                     if(privacy){
                                         Toast.makeText(requireContext(),"User has declined to show his favourites",Toast.LENGTH_SHORT).show();
                                     }
@@ -182,35 +185,35 @@ public class search_profile extends Fragment {
                                         getUserFavorites(clickedId, new OnGetFavoritesListener() {
                                             @Override
                                             public void onGetFavorites(List<String> favorites) {
-                                                // Inflate the custom layout
-                                                View dialogView = getLayoutInflater().inflate(R.layout.dialog_user_liked_games, null);
+                                                    // Inflate the custom layout
+                                                    View dialogView = getLayoutInflater().inflate(R.layout.dialog_user_liked_games, null);
 
-                                                if(favorites.isEmpty()){
-                                                    TextView title = dialogView.findViewById(R.id.dialog_favourites_title);
-                                                    title.setText("Empty list");
-                                                }
-                                                else if(favorites.get(0).isEmpty()){
-                                                    TextView title = dialogView.findViewById(R.id.dialog_favourites_title);
-                                                    title.setText("Empty list");
-                                                }
-                                                else {
-                                                    //instantiate the recycler for the favourites for the specific user
-                                                    userLikedRecycler = dialogView.findViewById(R.id.user_liked_rv);
-                                                    likedLayoutManager = new LinearLayoutManager(requireContext());
-                                                    userLikedRecycler.setLayoutManager(likedLayoutManager);
-                                                    userLikedRecycler.setItemAnimator(new DefaultItemAnimator());
-                                                    likedAdapter = new UserLikedGamesAdapter(favorites);
-                                                    userLikedRecycler.setAdapter(likedAdapter);
-                                                }
-                                                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                                                builder.setView(dialogView);
-                                                AlertDialog dialog = builder.create();
-                                                dialog.show();
+                                                    if(favorites.isEmpty()){
+                                                        TextView title = dialogView.findViewById(R.id.dialog_favourites_title);
+                                                        title.setText("Empty list");
+                                                    }
+                                                    else if(favorites.get(0).isEmpty()){
+                                                        TextView title = dialogView.findViewById(R.id.dialog_favourites_title);
+                                                        title.setText("Empty list");
+                                                    }
+                                                    else {
+                                                        //instantiate the recycler for the favourites for the specific user
+                                                        userLikedRecycler = dialogView.findViewById(R.id.user_liked_rv);
+                                                        likedLayoutManager = new LinearLayoutManager(requireActivity());
+                                                        userLikedRecycler.setLayoutManager(likedLayoutManager);
+                                                        userLikedRecycler.setItemAnimator(new DefaultItemAnimator());
+                                                        likedAdapter = new UserLikedGamesAdapter(favorites);
+                                                        userLikedRecycler.setAdapter(likedAdapter);
+                                                    }
+                                                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                                                    builder.setView(dialogView);
+                                                    dialog = builder.create();
+                                                    dialog.show();
                                             }
 
                                             @Override
                                             public void onError(String errorMessage) {
-                                                Toast.makeText(requireContext(),errorMessage,Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(requireActivity(),errorMessage,Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
@@ -221,7 +224,7 @@ public class search_profile extends Fragment {
 
                         @Override
                         public void onError(String errorMessage) {
-                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -256,7 +259,7 @@ public class search_profile extends Fragment {
         //listening for any change in the favourites and will trigger the onDataChange which will send the value of the
         //updated list and the UI will be updated accordingly
 
-        favoritesRef.addValueEventListener(new ValueEventListener() {
+        favoritesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> favoritesList = new ArrayList<>();
@@ -265,6 +268,13 @@ public class search_profile extends Fragment {
                     if (favorite != null) {
                         favoritesList.add(favorite);
                     }
+                }
+
+                //if the dialog was instantiated then when this function gets called once again that means that someone is watching on user's favourites
+                //and this user deleted some favourite so close the dialog fast and pass the new list to the adapter in the next line and set the new values
+                //to the adapter in the new dialog window
+                if(dialog!=null){
+                    dialog.dismiss();
                 }
                 // Pass the favoritesList to the listener
                 listener.onGetFavorites(favoritesList);
@@ -294,9 +304,13 @@ public class search_profile extends Fragment {
     public void userProfiles(String searchedText, final OnGetProfilesListener listener){
         List<Data> profiles = new ArrayList<Data>();
         DatabaseReference favoritesRef = FirebaseDatabase.getInstance().getReference("users");
-        favoritesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        //will listen for any changes and update the UI immediately if any new user that was created made
+        //when we searched for similar name to the one that was created
+        favoritesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //reset the previous list that was written and update with the new users added to the database based on the user name that was searched
+                profiles.clear();
                 for(DataSnapshot data: snapshot.getChildren()){
                     String name = data.child("name").getValue(String.class);
                     if(name.toLowerCase().trim().contains(searchedText.toLowerCase().trim())){
@@ -305,7 +319,7 @@ public class search_profile extends Fragment {
                         String pass = data.child("pass").getValue(String.class);
                         String phone = data.child("phone").getValue(String.class);
                         String uri = data.child("profilePicture").getValue(String.class);
-                        privacy = data.child("isPrivate").getValue(Boolean.class);
+                        Boolean myPrivacy = data.child("isPrivate").getValue(Boolean.class);
                         Map<String, String> favoritesMap = new HashMap<>();
                         DataSnapshot favoritesSnapshot = data.child("favorites");
                         for (DataSnapshot favoriteSnapshot : favoritesSnapshot.getChildren()) {
@@ -316,7 +330,7 @@ public class search_profile extends Fragment {
                             }
                         }
 
-                        Data profile = new Data(id, email, pass, phone, name,uri,privacy);
+                        Data profile = new Data(id, email, pass, phone, name,uri,myPrivacy);
                         profile.favorites = new ArrayList<>(favoritesMap.values());
                         profiles.add(profile);
                     }
