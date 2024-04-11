@@ -253,8 +253,10 @@ public class search_profile extends Fragment {
     }
     public void getUserFavorites(String userId, final OnGetFavoritesListener listener) {
         DatabaseReference favoritesRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("favorites");
+        //listening for any change in the favourites and will trigger the onDataChange which will send the value of the
+        //updated list and the UI will be updated accordingly
 
-        favoritesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        favoritesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> favoritesList = new ArrayList<>();
