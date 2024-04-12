@@ -121,7 +121,9 @@ public class register extends Fragment {
                         imageTaken = uri;
                 }
                 else {
-                    Toast.makeText(requireActivity(),"You haven't chose a photo",Toast.LENGTH_SHORT).show();
+                    if(imagePerson==null){
+                        Toast.makeText(requireActivity(),"You haven't chose a photo",Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
