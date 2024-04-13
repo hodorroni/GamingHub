@@ -81,7 +81,7 @@ public class Companies_Description extends Fragment {
         }
 
         if(id!=""){
-            SpecificCompanyModel specific = ServiceSpecificCompany.specificCompany(id);
+            SpecificCompanyModel specific = ServiceSpecificCompany.specificCompany(id,requireActivity());
             Glide.with(requireContext()).load(specific.getImage_background()).into((ImageView) view.findViewById(R.id.imageCompany));
             nameCompany.setText( specific.getName());
             numberOfGames.setText(getString(R.string.total_games_developed) + specific.getGame_count());

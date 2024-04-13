@@ -240,7 +240,7 @@ public class companies_games_fragment extends Fragment implements ServiceGamesFo
             //ArrayList<AllGamesExist> arr= ServiceAllGames.getArrGames();
             //notifying to the service that this fragment is going to listen when the data fetch is done.
             progressBar.setVisibility(View.VISIBLE);
-            ServiceGamesForCompany.getAllGames(id,this);
+            ServiceGamesForCompany.getAllGames(id,this,requireActivity());
         }
 
         searchedText.setImeOptions(EditorInfo.IME_ACTION_DONE);

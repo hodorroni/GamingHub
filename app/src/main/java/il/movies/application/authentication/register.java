@@ -143,7 +143,6 @@ public class register extends Fragment {
             @Override
             public void onClick(View v) {
                 registerFunc(view);
-                progressBar.setVisibility(View.VISIBLE);
             }
         });
 
@@ -272,6 +271,7 @@ public class register extends Fragment {
             Toast.makeText(requireContext(),"Empty fields, fill them!",Toast.LENGTH_SHORT).show();
         }
         else {
+            progressBar.setVisibility(View.VISIBLE);
             mAuth.createUserWithEmailAndPassword(email[0], password[0])
                     .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
                         @Override

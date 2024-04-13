@@ -1,7 +1,9 @@
 package il.movies.application.services;
 
+import android.content.Context;
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -26,7 +28,7 @@ public class ServiceGamesForCompany {
         void onAllGamesLoaded(ArrayList<AllGamesExist> allGames);
     }
 
-    public static void getAllGames(String companyName,OnAllGamesLoadedListener listener) {
+    public static void getAllGames(String companyName, OnAllGamesLoadedListener listener, Context context) {
 
         //makes a single thread to work on the background -> async task
         //when the fetcthing is over we are passing the Array to the fragment that implements that interface and overrides the onAllGamesLoaded
@@ -35,7 +37,7 @@ public class ServiceGamesForCompany {
             @Override
             public void run() {
                 //fetching the data from the api
-                ArrayList<AllGamesExist> allGames = fetchDataFromApi(companyName);
+                ArrayList<AllGamesExist> allGames = fetchDataFromApi(companyName,context);
                 if (listener != null) {
                     //passing the data fetched to the listener, in this case our fragment.
                     listener.onAllGamesLoaded(allGames);
@@ -45,7 +47,7 @@ public class ServiceGamesForCompany {
     }
     private static ArrayList<AllGamesExist> arrState = new ArrayList<>();
 
-    private static ArrayList<AllGamesExist> fetchDataFromApi(String companyName)  {
+    private static ArrayList<AllGamesExist> fetchDataFromApi(String companyName,Context context)  {
         arrState.clear();
 
         String sURL = "https://api.rawg.io/api/games?publishers="+companyName+"&key=90bb480b90644cf89ad130ca6a4ee42c";
@@ -122,9 +124,9 @@ public class ServiceGamesForCompany {
 
         }
         catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            Toast.makeText(context,"Error loading games",Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Toast.makeText(context,"Error loading games",Toast.LENGTH_SHORT).show();
         }
 
         return arrState;

@@ -1,8 +1,8 @@
 package il.movies.application.services;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.StrictMode;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -12,7 +12,6 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,7 +20,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import il.movies.application.models.AllGamesExist;
-import il.movies.application.models.State;
 
 public class ServiceAllGames {
 
@@ -31,7 +29,7 @@ public class ServiceAllGames {
         void onAllGamesLoaded(ArrayList<AllGamesExist> allGames);
     }
 
-    public static void getAllGames(OnAllGamesLoadedListener listener) {
+    public static void getAllGames(OnAllGamesLoadedListener listener, Context context) {
 
         //makes a single thread to work on the background -> async task
         //when the fetcthing is over we are passing the Array to the fragment that implements that interface and overrides the onAllGamesLoaded
@@ -40,7 +38,7 @@ public class ServiceAllGames {
             @Override
             public void run() {
                 //fetching the data from the api
-                ArrayList<AllGamesExist> allGames = fetchDataFromApi();
+                ArrayList<AllGamesExist> allGames = fetchDataFromApi(context);
                 if (listener != null) {
                     //passing the data fetched to the listener, in this case our fragment.
                     listener.onAllGamesLoaded(allGames);
@@ -50,7 +48,7 @@ public class ServiceAllGames {
     }
     private static ArrayList<AllGamesExist> arrState = new ArrayList<>();
 
-    private static ArrayList<AllGamesExist> fetchDataFromApi()  {
+    private static ArrayList<AllGamesExist> fetchDataFromApi(Context context)  {
         arrState.clear();
 
 
@@ -122,9 +120,9 @@ public class ServiceAllGames {
 
         }
         catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            Toast.makeText(context,"Error loading games",Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Toast.makeText(context,"Error loading games",Toast.LENGTH_SHORT).show();
         }
 
 

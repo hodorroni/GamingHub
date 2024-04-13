@@ -233,7 +233,7 @@ public class games_fragment extends Fragment implements ServiceAllGames.OnAllGam
         //ArrayList<AllGamesExist> arr= ServiceAllGames.getArrGames();
         //notifying to the service that this fragment is going to listen when the data fetch is done.
         progressBar.setVisibility(View.VISIBLE);
-        ServiceAllGames.getAllGames(this);
+        ServiceAllGames.getAllGames(this,requireActivity());
 
 
         searchedText.setImeOptions(EditorInfo.IME_ACTION_DONE);

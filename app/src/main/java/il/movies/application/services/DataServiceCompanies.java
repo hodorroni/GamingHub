@@ -1,7 +1,9 @@
 package il.movies.application.services;
 
+import android.content.Context;
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -27,7 +29,7 @@ public class DataServiceCompanies {
         void onAllGamesLoaded(ArrayList<State> allGames);
     }
 
-    public static void getAllCompanies(OnAllGamesLoadedListener listener) {
+    public static void getAllCompanies(OnAllGamesLoadedListener listener, Context context) {
         //makes a single thread to work on the background -> async task
         //when the fetcthing is over we are passing the Array to the fragment that implements that interface and overrides the onAllGamesLoaded
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -36,7 +38,7 @@ public class DataServiceCompanies {
             public void run() {
 
                 //fetching the data from the api
-                ArrayList<State> allGames = fetchDataFromApi();
+                ArrayList<State> allGames = fetchDataFromApi(context);
                 if (listener != null) {
                     //passing the data fetched to the listener, in this case our fragment.
                     listener.onAllGamesLoaded(allGames);
@@ -50,7 +52,7 @@ public class DataServiceCompanies {
 
     private static ArrayList<State> arrState = new ArrayList<>();
 
-    private static ArrayList<State> fetchDataFromApi(){
+    private static ArrayList<State> fetchDataFromApi(Context context){
         arrState.clear();
         String sURL = "https://api.rawg.io/api/publishers?key=90bb480b90644cf89ad130ca6a4ee42c&page_size=140";
 
@@ -113,9 +115,9 @@ public class DataServiceCompanies {
             }
         }
         catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            Toast.makeText(context,"Error loading companies",Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Toast.makeText(context,"Error loading companies",Toast.LENGTH_SHORT).show();
         }
         return arrState;
     }

@@ -1,7 +1,9 @@
 package il.movies.application.services;
 
+import android.content.Context;
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -24,7 +26,7 @@ public class ServiceSpecificCompany {
 
     private static SpecificCompanyModel myModel = new SpecificCompanyModel();
 
-    public static SpecificCompanyModel specificCompany(String idCompany){
+    public static SpecificCompanyModel specificCompany(String idCompany, Context context){
         String sURL = "https://api.rawg.io/api/publishers/"+idCompany+"?key=90bb480b90644cf89ad130ca6a4ee42c";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -61,9 +63,9 @@ public class ServiceSpecificCompany {
             myModel.setGame_count(game_count);
         }
         catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            Toast.makeText(context,"Error loading description",Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Toast.makeText(context,"Error loading description",Toast.LENGTH_SHORT).show();
         }
         return myModel;
     }

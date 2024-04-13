@@ -211,7 +211,7 @@ public class publishers_fragment extends Fragment implements DataServiceCompanie
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         progressBar= view.findViewById(R.id.all_companies_progress_bar);
-        DataServiceCompanies.getAllCompanies(this);
+        DataServiceCompanies.getAllCompanies(this,requireActivity());
 
 
 
