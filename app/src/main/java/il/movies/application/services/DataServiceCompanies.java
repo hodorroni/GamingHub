@@ -54,7 +54,7 @@ public class DataServiceCompanies {
 
     private static ArrayList<State> fetchDataFromApi(Context context){
         arrState.clear();
-        String sURL = "https://api.rawg.io/api/publishers?key=90bb480b90644cf89ad130ca6a4ee42c&page_size=140";
+        String sURL = "https://api.rawg.io/api/publishers?key=1982bdab49df44ea9d76e98db0eb3d64&page_size=140";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

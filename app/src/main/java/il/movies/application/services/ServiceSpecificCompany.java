@@ -27,7 +27,7 @@ public class ServiceSpecificCompany {
     private static SpecificCompanyModel myModel = new SpecificCompanyModel();
 
     public static SpecificCompanyModel specificCompany(String idCompany, Context context){
-        String sURL = "https://api.rawg.io/api/publishers/"+idCompany+"?key=90bb480b90644cf89ad130ca6a4ee42c";
+        String sURL = "https://api.rawg.io/api/publishers/"+idCompany+"?key=1982bdab49df44ea9d76e98db0eb3d64";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
