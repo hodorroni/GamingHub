@@ -1,6 +1,8 @@
 package il.movies.application.services;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
@@ -63,9 +65,19 @@ public class ServiceSpecificCompany {
             myModel.setGame_count(game_count);
         }
         catch (MalformedURLException e) {
-            Toast.makeText(context,"Error loading description",Toast.LENGTH_SHORT).show();
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Error loading description", Toast.LENGTH_SHORT).show();
+                }
+            });
         } catch (IOException e) {
-            Toast.makeText(context,"Error loading description",Toast.LENGTH_SHORT).show();
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Error loading description", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         return myModel;
     }

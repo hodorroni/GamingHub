@@ -307,7 +307,7 @@ public class publishers_fragment extends Fragment implements DataServiceCompanie
                 adapter =new CompaniesAdapter(myArr, requireContext(), new CompaniesAdapter.ItemListener() {
                     @Override
                     public void onItemClicked(int index) {
-                        Toast.makeText(requireContext(),myArr.get(index).getName(),Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(requireContext(),myArr.get(index).getName(),Toast.LENGTH_SHORT).show();
                         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                         builder.setTitle("Choose between description or company's games")
                                 .setMessage("You have the option to choose between more details about the company or to see the company's games");
